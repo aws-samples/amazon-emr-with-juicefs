@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 10
+  build:
+    commands:
+      - . ${CODEBUILD_SRC_DIR}/.env
+      - cd ${CODEBUILD_SRC_DIR}/source
+      - BUCKET_NAME=${DIST_OUTPUT_BUCKET}
+      - ./run-all-tests.sh
+      - cd ${CODEBUILD_SRC_DIR}/deployment
+      - ./build-s3-dist.sh ${DIST_OUTPUT_BUCKET} ${SOLUTION_NAME} ${VERSION}
+
+artifacts:
+  files:
+    - "**/*"

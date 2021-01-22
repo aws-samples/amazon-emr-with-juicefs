@@ -1,0 +1,621 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Sample snapshot test 1`] = `
+Object {
+  "Metadata": Object {
+    "AWS::CloudFormation::Interface": Object {
+      "ParameterGroups": Array [
+        Object {
+          "Label": Object {
+            "default": "Cluster Settings",
+          },
+          "Parameters": Array [
+            "EMRClusterName",
+            "Ec2KeyName",
+            "MasterInstanceType",
+            "NumberOfMasterInstances",
+            "CoreInstanceType",
+            "NumberOfCoreInstances",
+          ],
+        },
+        Object {
+          "Label": Object {
+            "default": "JuiceFS Configurations",
+          },
+          "Parameters": Array [
+            "JuiceFSAccessToken",
+            "JuiceFSBucketName",
+            "JuiceFSCacheDir",
+            "JuiceFSCacheSize",
+            "JuiceFSCacheFullBlock",
+          ],
+        },
+      ],
+    },
+  },
+  "Outputs": Object {
+    "ClusterID": Object {
+      "Value": Object {
+        "Ref": "EMRwithJuiceFSEMRCluster67967B1F",
+      },
+    },
+  },
+  "Parameters": Object {
+    "CoreInstanceType": Object {
+      "Default": "m5.xlarge",
+      "Description": "Instance type to be used for the core instances",
+      "Type": "String",
+    },
+    "EMRClusterName": Object {
+      "Default": "EMRwithJuiceFS",
+      "Description": "The cluster name",
+      "MinLength": 5,
+      "Type": "String",
+    },
+    "Ec2KeyName": Object {
+      "Description": "The keypair name of the cluster",
+      "Type": "AWS::EC2::KeyPair::KeyName",
+    },
+    "JuiceFSAccessToken": Object {
+      "Description": "The access token of JuiceFS volume",
+      "MinLength": 30,
+      "NoEcho": true,
+      "Type": "String",
+    },
+    "JuiceFSBucketName": Object {
+      "Description": "The bucket name of JuiceFS volume",
+      "MinLength": 1,
+      "Type": "String",
+    },
+    "JuiceFSCacheDir": Object {
+      "Default": "/mnt/jfs",
+      "Description": "The cache directory of JuiceFS Java Client, you could specify more than one folder, seperate by colon, or use wildcards *",
+      "MinLength": 3,
+      "Type": "String",
+    },
+    "JuiceFSCacheFullBlock": Object {
+      "AllowedValues": Array [
+        "true",
+        "false",
+      ],
+      "Default": "false",
+      "Description": "Whether to cache sequential read data, set to false when disk space is limited or disk performance is low",
+      "Type": "String",
+    },
+    "JuiceFSCacheSize": Object {
+      "Default": "10240",
+      "Description": "Cache capacity (unit MB), if multiple diectories are configured, this is total capacity for all cache folders",
+      "MinValue": 0,
+      "Type": "Number",
+    },
+    "MasterInstanceType": Object {
+      "Default": "m5.xlarge",
+      "Description": "Instance type to be used for the master instance",
+      "Type": "String",
+    },
+    "NumberOfCoreInstances": Object {
+      "Default": 3,
+      "Description": "Number of core instances",
+      "Type": "Number",
+    },
+    "NumberOfMasterInstances": Object {
+      "Default": 1,
+      "Description": "Number of master instances",
+      "Type": "Number",
+    },
+  },
+  "Resources": Object {
+    "EMRClusterinstanceProfile": Object {
+      "Properties": Object {
+        "Roles": Array [
+          Object {
+            "Ref": "EMRClusterinstanceProfileRole61C4552E",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
+    },
+    "EMRClusterinstanceProfileRole61C4552E": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "ec2.",
+                      Object {
+                        "Ref": "AWS::URLSuffix",
+                      },
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonElasticMapReduceforEC2Role",
+              ],
+            ],
+          },
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AmazonSSMManagedInstanceCore",
+              ],
+            ],
+          },
+        ],
+        "Policies": Array [
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "s3:PutObject",
+                    "s3:GetObject",
+                    "s3:DeleteObject",
+                    "s3:ListBucket",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": Array [
+                    Object {
+                      "Fn::Join": Array [
+                        "",
+                        Array [
+                          "arn:",
+                          Object {
+                            "Ref": "AWS::Partition",
+                          },
+                          ":s3:::",
+                          Object {
+                            "Ref": "JuiceFSBucketName",
+                          },
+                          "/*",
+                        ],
+                      ],
+                    },
+                    Object {
+                      "Fn::Join": Array [
+                        "",
+                        Array [
+                          "arn:",
+                          Object {
+                            "Ref": "AWS::Partition",
+                          },
+                          ":s3:::",
+                          Object {
+                            "Ref": "JuiceFSBucketName",
+                          },
+                        ],
+                      ],
+                    },
+                  ],
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "JuiceFSS3Access",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "EMRwithJuiceFSEMRCluster67967B1F": Object {
+      "DependsOn": Array [
+        "VpcIngressSubnet1NATGateway7BDA41FF",
+      ],
+      "Properties": Object {
+        "Applications": Array [
+          Object {
+            "Name": "Hive",
+          },
+          Object {
+            "Name": "Spark",
+          },
+        ],
+        "BootstrapActions": Array [
+          Object {
+            "Name": "BootJuiceFS",
+            "ScriptBootstrapAction": Object {
+              "Path": "s3://aws-gcr-solutions/emr-with-juicefs/latest/emr-boot.py",
+            },
+          },
+          Object {
+            "Name": "InstallTPC-DSBenchmarkAssets",
+            "ScriptBootstrapAction": Object {
+              "Args": Array [
+                "instance.isMaster=true",
+                "aws",
+                "s3",
+                "cp",
+                "s3://aws-gcr-solutions/emr-with-juicefs/latest/benchmark-sample.zip",
+                "/home/hadoop",
+              ],
+              "Path": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "s3://",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ".elasticmapreduce/bootstrap-actions/run-if",
+                  ],
+                ],
+              },
+            },
+          },
+        ],
+        "Configurations": Array [
+          Object {
+            "Classification": "core-site",
+            "ConfigurationProperties": Object {
+              "fs.AbstractFileSystem.jfs.impl": "com.juicefs.JuiceFS",
+              "fs.jfs.impl": "com.juicefs.JuiceFileSystem",
+              "juicefs.access-log": "/tmp/juicefs.access.log",
+              "juicefs.cache-dir": Object {
+                "Ref": "JuiceFSCacheDir",
+              },
+              "juicefs.cache-full-block": Object {
+                "Ref": "JuiceFSCacheFullBlock",
+              },
+              "juicefs.cache-group": "yarn",
+              "juicefs.cache-size": Object {
+                "Ref": "JuiceFSCacheSize",
+              },
+              "juicefs.discover-nodes-url": "yarn",
+              "juicefs.free-space": "0.3",
+              "juicefs.token": Object {
+                "Ref": "JuiceFSAccessToken",
+              },
+            },
+            "Configurations": Array [],
+          },
+          Object {
+            "Classification": "emrfs-site",
+            "ConfigurationProperties": Object {
+              "fs.s3.consistent": "false",
+              "fs.s3.consistent.metadata.read.capacity": "600",
+              "fs.s3.consistent.metadata.write.capacity": "300",
+            },
+          },
+        ],
+        "Instances": Object {
+          "CoreInstanceGroup": Object {
+            "InstanceCount": Object {
+              "Ref": "NumberOfCoreInstances",
+            },
+            "InstanceType": Object {
+              "Ref": "CoreInstanceType",
+            },
+            "Market": "ON_DEMAND",
+            "Name": "Core",
+          },
+          "Ec2KeyName": Object {
+            "Ref": "Ec2KeyName",
+          },
+          "Ec2SubnetId": Object {
+            "Ref": "VpcApplicationSubnet1SubnetDBACD680",
+          },
+          "MasterInstanceGroup": Object {
+            "InstanceCount": Object {
+              "Ref": "NumberOfMasterInstances",
+            },
+            "InstanceType": Object {
+              "Ref": "MasterInstanceType",
+            },
+            "Market": "ON_DEMAND",
+            "Name": "Master",
+          },
+          "TerminationProtected": false,
+        },
+        "JobFlowRole": Object {
+          "Ref": "EMRClusterinstanceProfile",
+        },
+        "LogUri": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "s3://",
+              Object {
+                "Ref": "LogBucketCC3B17E8",
+              },
+            ],
+          ],
+        },
+        "Name": Object {
+          "Ref": "EMRClusterName",
+        },
+        "ReleaseLabel": "emr-5.31.0",
+        "ServiceRole": Object {
+          "Fn::GetAtt": Array [
+            "EMRwithJuiceFSEMRClusterServiceRoleC5BA7F33",
+            "Arn",
+          ],
+        },
+        "VisibleToAllUsers": true,
+      },
+      "Type": "AWS::EMR::Cluster",
+    },
+    "EMRwithJuiceFSEMRClusterServiceRoleC5BA7F33": Object {
+      "DependsOn": Array [
+        "VpcIngressSubnet1NATGateway7BDA41FF",
+      ],
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "elasticmapreduce.",
+                      Object {
+                        "Ref": "AWS::URLSuffix",
+                      },
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonElasticMapReduceRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LogBucketCC3B17E8": Object {
+      "DeletionPolicy": "Retain",
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "Vpc8378EB38": Object {
+      "Properties": Object {
+        "CidrBlock": "10.0.0.0/21",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "MyTestStack/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "VpcApplicationSubnet1DefaultRoute81C30955": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "VpcIngressSubnet1NATGateway7BDA41FF",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcApplicationSubnet1RouteTable774D192A",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcApplicationSubnet1RouteTable774D192A": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "MyTestStack/Vpc/ApplicationSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcApplicationSubnet1RouteTableAssociation2AF278FF": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcApplicationSubnet1RouteTable774D192A",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcApplicationSubnet1SubnetDBACD680",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcApplicationSubnet1SubnetDBACD680": Object {
+      "Properties": Object {
+        "AvailabilityZone": Object {
+          "Fn::Select": Array [
+            0,
+            Object {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.1.0/24",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Application",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "MyTestStack/Vpc/ApplicationSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcIGWD7BA715C": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "MyTestStack/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "VpcIngressSubnet1DefaultRouteA09F0513": Object {
+      "DependsOn": Array [
+        "VpcVPCGWBF912B6E",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "RouteTableId": Object {
+          "Ref": "VpcIngressSubnet1RouteTable4A2F04D4",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "VpcIngressSubnet1EIPA06141F9": Object {
+      "Properties": Object {
+        "Domain": "vpc",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "MyTestStack/Vpc/IngressSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "VpcIngressSubnet1NATGateway7BDA41FF": Object {
+      "Properties": Object {
+        "AllocationId": Object {
+          "Fn::GetAtt": Array [
+            "VpcIngressSubnet1EIPA06141F9",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": Object {
+          "Ref": "VpcIngressSubnet1SubnetBB860652",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "MyTestStack/Vpc/IngressSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "VpcIngressSubnet1RouteTable4A2F04D4": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "MyTestStack/Vpc/IngressSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "VpcIngressSubnet1RouteTableAssociationB783F1CD": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "VpcIngressSubnet1RouteTable4A2F04D4",
+        },
+        "SubnetId": Object {
+          "Ref": "VpcIngressSubnet1SubnetBB860652",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "VpcIngressSubnet1SubnetBB860652": Object {
+      "Properties": Object {
+        "AvailabilityZone": Object {
+          "Fn::Select": Array [
+            0,
+            Object {
+              "Fn::GetAZs": "",
+            },
+          ],
+        },
+        "CidrBlock": "10.0.0.0/24",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Ingress",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "MyTestStack/Vpc/IngressSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "VpcVPCGWBF912B6E": Object {
+      "Properties": Object {
+        "InternetGatewayId": Object {
+          "Ref": "VpcIGWD7BA715C",
+        },
+        "VpcId": Object {
+          "Ref": "Vpc8378EB38",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+    },
+  },
+}
+`;

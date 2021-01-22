@@ -1,0 +1,13 @@
+# Ignore Config used with code.amazon.com
+Config
+
+# Use of opensource-codeofconduct email for amazon is expected
+CODE_OF_CONDUCT.md:4
+CONTRIBUTING.md:51
+
+^dist/
+node_modules/
+package-lock.json
+emr-boot.py
+emr-benchmark.py
+.sql
