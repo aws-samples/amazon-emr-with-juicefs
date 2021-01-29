@@ -24,7 +24,9 @@ TPC-DS 由事务性能管理委员会（TPC）发布，该委员会是目前最�
 
 1. [注册JuiceFS账户](https://juicefs.com/accounts/register)
 
-2. 在 JuiceFS 控制台上创建一个卷。选择你的 AWS 账户区域，并创建一个新卷。由于大数据里面常使用的是 ORC 或者 Parquet 文件格式，存在大量的随机读，为减少读放大，压缩格式改为 Uncompressed
+2. 在 [JuiceFS 控制台](http://juicefs.com/console/)上创建一个卷。选择你的 AWS 账户区域，并创建一个新卷。请在 “高级选项” 中将 “压缩” 项改为 Uncompressed
+
+    > 注意：JuiceFS 文件系统默认启用 lz4 算法对数据进行压缩。在大数据分析场景中经常使用 ORC 或者 Parquet 等列存文件格式，查询过程中往往只需要读取文件中的一部分，如果启用压缩算法，则必须读取完整 block 解压后才能获得需要的部分，这样会造成读放大。关闭压缩后，则可以直接读取部分数据
 
     ![juicefs-creat-volume.png](./assets/juicefs-create-volume.png)
 

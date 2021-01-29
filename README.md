@@ -24,7 +24,11 @@ TPC-DS is published by the Transaction Performance Management Committee (TPC), t
 
 1. [Register for a JuiceFS account](https://juicefs.com/accounts/register)
 
-2. Create a volume in the JuiceFS console. Select your AWS account region and create a new volume. Since ORC or Parquet file formats are often used inside big data, there are a lot of random reads, to reduce read amplification, the compression format is changed to Uncompressed
+2. Create a volume on the [JuiceFS Console](http://juicefs.com/console/). Select your AWS account region and create a new volume. Please change the "Compressed" item to Uncompressed in "Advanced Options"
+
+    > Note: JuiceFS file system enables lz4 algorithm for data compression by default. In big data analysis scenarios, ORC or Parquet file formats are often used, and only a part of the file needs to be read during the query process. If compression is enabled, the complete block must be read and decompressed to get the needed part, which will cause read amplification. If compression is turned off, you can read part of the data directly
+
+Translated with www.DeepL.com/Translator (free version)
 
     ![juicefs-create-volume.png](./assets/juicefs-create-volume.png)
 
