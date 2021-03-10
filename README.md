@@ -28,8 +28,6 @@ TPC-DS is published by the Transaction Performance Management Committee (TPC), t
 
     > Note: JuiceFS file system enables lz4 algorithm for data compression by default. In big data analysis scenarios, ORC or Parquet file formats are often used, and only a part of the file needs to be read during the query process. If compression is enabled, the complete block must be read and decompressed to get the needed part, which will cause read amplification. If compression is turned off, you can read part of the data directly
 
-Translated with www.DeepL.com/Translator (free version)
-
     ![juicefs-create-volume.png](./assets/juicefs-create-volume.png)
 
 3. Get the access token and volume name from the JuiceFS console
