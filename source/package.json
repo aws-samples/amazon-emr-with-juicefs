@@ -26,7 +26,8 @@
     "jest": "^27.0.3",
     "ts-jest": "^27.0.1",
     "ts-node": "^10.0.0",
-    "typescript": "~4.3.2"
+    "typescript": "~4.3.2",
+    "path-parse": ">=1.0.7"
   },
   "dependencies": {
     "@aws-cdk/aws-ec2": "^1.73.0",
